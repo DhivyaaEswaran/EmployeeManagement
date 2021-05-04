@@ -4,16 +4,10 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    <class name = "com.ideas2it.employeemanagement.model.Address" table = "Address">
-      
-      <!--<meta attribute = "class-description">-->
-        <!--This class contains the employee detail. -->
-      <!--</meta>-->
-      
+    <class name = "com.ideas2it.employeemanagement.model.Address" table = "Address">      
       <id name = "addressId" type = "int" column = "address_id">
-         <generator class = "native"/>
-      </id>
- 
+         <generator class = "increment"/>
+      </id> 
       <property name = "doorNumber" column = "door_number" type = "string"/>
       <property name = "streetName" column = "street_name" type = "string"/>
       <property name = "district" column = "district" type = "string"/>

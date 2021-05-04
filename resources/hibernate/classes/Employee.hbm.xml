@@ -4,12 +4,10 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
 
 <hibernate-mapping>
-    <class name = "com.ideas2it.employeemanagement.model.Employee" table = "employee">
-      
+    <class name = "com.ideas2it.employeemanagement.model.Employee" table = "employee">      
       <id name = "id" type = "int" column = "id">
          <generator class = "increment"/>
-      </id>
- 
+      </id> 
       <property name = "name" column = "name" type = "string"/>
       <property name = "salary" column = "salary" type = "double"/>
       <property name = "dateOfBirth" column = "date_of_birth" type = "date"/>
@@ -26,4 +24,3 @@
       </bag>
     </class>
 </hibernate-mapping>
-      

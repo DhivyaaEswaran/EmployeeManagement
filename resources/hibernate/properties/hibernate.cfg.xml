@@ -25,9 +25,9 @@
             dhivyaa
         </property>
 
-        <property name = "hibernate.hbm2ddl.auto"> update </property>
+        <property name = "hibernate.hbm2ddl.auto">update</property>
 
-        <property name = "hibernate.show_sql"> true </property>
+        <property name = "hibernate.show_sql"> false </property>
 
         <mapping resource = "/resources/hibernate/classes/Employee.hbm.xml"/>
         <mapping resource = "/resources/hibernate/classes/Address.hbm.xml"/>

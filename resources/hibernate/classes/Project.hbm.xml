@@ -6,10 +6,6 @@
 <hibernate-mapping>
     <class name = "com.ideas2it.projectmanagement.model.Project" table = "project">
       
-      <meta attribute = "class-description">
-         This class contains the employee detail. 
-      </meta>
-      
       <id name = "projectId" type = "int" column = "project_id">
          <generator class = "sequence"/>
       </id>
@@ -19,9 +15,9 @@
       <property name = "endDate" column = "end_date" type = "date"/>
       <property name = "manager" column = "manager" type = "string"/>
       <property name = "isDeleted" column = "is_deleted" type = "boolean"/>
-      <bag name = "employees" table = "employee" lazy = "true" cascade = "save-update">
+      <bag name = "employees" table = "employee_project" lazy = "true">
           <key column = "project_id"/>
-          <many-to-many  class = "com.ideas2it.projectmanagement.model.Project"/>
+          <many-to-many column = "employee_id" class = "com.ideas2it.employeemanagement.model.Employee"/>
       </bag>
     </class>
 </hibernate-mapping>
