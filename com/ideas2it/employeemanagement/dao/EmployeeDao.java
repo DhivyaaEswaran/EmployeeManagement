@@ -17,4 +17,54 @@ public interface EmployeeDao {
      * @param employee - Employee
      */
     public void insertEmployee(Employee employee); 
+
+    /**
+     * Here we display individual details of employee
+     *
+     * @param id - id
+     * @return employee
+     */
+    public Employee getIndividualEmployee(int id);
+
+    /**
+     * Here we display all employee 
+     */
+    public List<Employee> getEmployee();
+
+    /**
+     * Here we update address details of employee
+     *
+     * @param address - address
+     */
+    public void updateAddress(Address address);
+
+    /**
+     * Here we get employee for update
+     *
+     * @param id - id
+     * @return employee
+     */
+    public Employee getEmployeeForUpdate(int id);
+
+    /**
+     * Here we get address value for update
+     *
+     * @param id - id
+     * @return address
+     */
+    public Address getAddressForUpdate(int id);
+
+    /**
+     * Here we check id of employee
+     *
+     * @param id - id
+     */
+    public int checkId(int id);
+
+    /**
+     * Here we delete employee details
+     *
+     * @param employee - employee
+     */
+    public void saveOrUpdateEmployee(Employee employee);    
 }

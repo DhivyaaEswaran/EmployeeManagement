@@ -4,8 +4,8 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.Query;
 import org.hibernate.HibernateException;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
@@ -48,47 +48,85 @@ public class ProjectDaoImpl implements ProjectDao {
         }    
     }
 
-   /**
-    * {@inheritdoc}
-    */
+    /**
+     * {@inheritdoc}
+     */
     @Override
-    public Project getIndividualProject(int projectId) {
+    public void saveOrUpdateProject(Project project) {
+        Session session = null;
+        Transaction transaction = null;
+
+        try {
+            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.saveOrUpdate(project);   
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+
+            if (transaction != null) {
+                session.getTransaction().rollback();
+            }
+        e.printStackTrace();
+        } finally {
+            session.close();
+        }    
+    }   
+
+    /**
+     * {@inheritdoc}
+     */
+     @Override
+     public Project getIndividualProject(int projectId) {
+         Session session = null;
+         Project project = null;
+ 
+         try {
+             SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
+             session = sessionFactory.openSession(); 
+             project = (Project)session.get(Project.class, projectId);
+             project.getEmployees().size();                     
+         } catch (HibernateException exception) {
+             exception.printStackTrace();    
+         } finally {
+           
+             if (session != null) {
+                 session.close();
+             }
+         }   
+         return project; 
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    @Override
+    public List<Project> getProject() {
         Session session = null;
         Project project = null;
+        List<Project> value = null;
  
         try {
             SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession(); 
-            project = (Project)session.get(Project.class, projectId);
-        } catch (HibernateException exception) {
-            
+            session = sessionFactory.openSession();    
+            Query query = session.createQuery("from Project project WHERE is_deleted = 0");
+            value = (List<Project>) query.list();    
+        } catch (HibernateException e) {
+            e.printStackTrace();
         } finally {
            
             if (session != null) {
                 session.close();
             }
         }   
-        return project; 
+        return value;     
     }
-
-    /**
-     * {@inheritdoc}
-     */
-   // @Override
-   // public Project getProject() {
-        
-
-
-
-    //}
-
 
     /**
      * {@inheritdoc}
      */
     @Override
     public void updateProject(Project project) {
-        //Transaction transaction = null;
         Session session = null;
 
         try {
@@ -145,7 +183,8 @@ public class ProjectDaoImpl implements ProjectDao {
         try {
             SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
             session = sessionFactory.openSession();
-            Query query = session.createQuery("SELECT COUNT(id) FROM Project project WHERE project_id = :id");
+            Query query = session.createQuery("SELECT COUNT(id)"
+                    + " FROM Project project WHERE project_id = :id");
             query.setParameter("id", projectId);
             count = ((Long)query.uniqueResult()).intValue();          
         } catch (HibernateException exception) { 

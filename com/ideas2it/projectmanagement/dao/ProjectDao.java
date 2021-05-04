@@ -19,6 +19,13 @@ public interface ProjectDao {
     public void createProject(Project project);
 
     /**
+     * Here we delete details of project
+     *
+     * @param projectId
+     */
+    public void saveOrUpdateProject(Project project);
+
+    /**
      * Here we display individual details of project
      *
      * @param id - id
@@ -45,7 +52,7 @@ public interface ProjectDao {
      *
      * @return project 
      */
-    //public Project getProject();
+    public List<Project> getProject();
 
     /**
      * Here we check project id

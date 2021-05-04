@@ -3,8 +3,15 @@ package com.ideas2it.employeemanagement.model;
 import java.sql.Date;
 import java.util.List;
 
+import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.projectmanagement.model.Project;
 
+/** 
+ * POJO class containing employee details
+ * it includes details such as ID, name, mobile number, date of birth, emailId 
+ * @author Dhivyaa Eswaran
+ * @version 1.0 29-05-2021
+ */    
 public class Employee {
     private int id;
     private String name;
@@ -15,7 +22,16 @@ public class Employee {
     private List<Address> addresses;
     private boolean isDeleted;
     private List<Project> projects;
-     
+    
+    /**
+     * Here we get employee details and address details as list
+     *
+     * @param name - employee name
+     * @param salary - employee salary
+     * @param dateOfBirth - employee dateOfBirth
+     * @param emailId - employee emailId
+     * @param address - address list
+     */ 
     public Employee(String name, double salary,
             Date dateOfBirth, String mobileNumber, String emailId,
             List<Address> addresses) {
@@ -30,6 +46,14 @@ public class Employee {
     public Employee() {
     } 
   
+    /**
+     * Here we get employee details
+     *
+     * @param name - employee name
+     * @param salary - employee salary
+     * @param dateOfBirth - employee dateOfBirth
+     * @param emailId - employee emailId
+     */
     public Employee(String name, double salary, Date dateOfBirth,
             String emailId, String mobileNumber) {
         this.name = name;
@@ -75,7 +99,7 @@ public class Employee {
         return addresses;
     } 
 
-     public void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

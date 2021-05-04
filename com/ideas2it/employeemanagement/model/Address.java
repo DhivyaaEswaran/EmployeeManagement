@@ -10,9 +10,10 @@ import com.ideas2it.employeemanagement.model.Employee;
  * it includes details such as id, door number, street name, district,
  * state, country, pincode
  * @author Dhivyaa Eswaran
- * @version 1.0 12-04-2021
+ * @version 1.0 29-05-2021
  */
 public class Address {
+    private int id;
     private int addressId;
     private String doorNumber;
     private String streetName;
@@ -44,6 +45,28 @@ public class Address {
        this.country = country;
        this.pinCode = pinCode;
     }
+ 
+    /**
+     * Here we get the Employees address details 
+     * @param id - Address id
+     * @param doorNumber - doorNumber
+     * @param streetName - streetName
+     * @param district - district
+     * @param state - state
+     * @param country - country
+     * @param pinCode - pinCode
+     */
+    public Address(int id, int addressId, String doorNumber, String streetName,
+            String district, String state, String country, int pinCode) {       
+       this.id = id;
+       this.addressId = addressId;
+       this.doorNumber = doorNumber;
+       this.streetName = streetName;
+       this.district = district;
+       this.state = state;
+       this.country = country;
+       this.pinCode = pinCode;
+    }
     
     public boolean getIsDeleted() {
         return isDeleted;
@@ -53,6 +76,9 @@ public class Address {
         return addressId;
     }
   
+    public int getId() {
+        return id;
+    }
 
     public String getDoorNumber() {
         return doorNumber;
@@ -116,6 +142,10 @@ public class Address {
  
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String toString() {

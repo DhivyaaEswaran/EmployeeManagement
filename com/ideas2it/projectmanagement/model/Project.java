@@ -10,7 +10,7 @@ import com.ideas2it.employeemanagement.model.Employee;
  * it includes details such as Id, name, startDate, endDate, manager
  *
  * @author Dhivyaa eswaran
- * @version 1.0 16-04-2021
+ * @version 1.0 29-05-2021
  */
 public class Project {
     private int projectId;
@@ -34,8 +34,7 @@ public class Project {
     * @param manager - manager
     */
     public Project(String projectName, Date startDate,
-            Date endDate, String manager) {
-        
+            Date endDate, String manager) {        
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;

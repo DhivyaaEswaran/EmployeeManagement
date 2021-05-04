@@ -5,9 +5,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
 /**
- * 
+ * singleton class for connecting to database
  *
- * @version  1.0 24-04-2021.
+ * @version  1.0 29-05-2021.
  * @author   Dhivyaa Eswaran
  */
 public class DataBaseConnectivity {
