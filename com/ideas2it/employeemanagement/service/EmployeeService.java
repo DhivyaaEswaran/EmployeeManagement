@@ -138,6 +138,13 @@ public interface EmployeeService {
     public boolean checkId(int id);
 
     /**
+     * Here we check deleted employee id
+     *
+     * @param id - id
+     */
+    public boolean checkDeletedId(int id);
+
+    /**
      * Here we delete details of employee
      *
      * @param id - id

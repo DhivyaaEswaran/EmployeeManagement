@@ -12,13 +12,6 @@ import com.ideas2it.employeemanagement.model.Employee;
 public interface EmployeeDao {
 
     /**
-     * Here we insert the details for employee
-     *
-     * @param employee - Employee
-     */
-    public void insertEmployee(Employee employee); 
-
-    /**
      * Here we display individual details of employee
      *
      * @param id - id
@@ -29,30 +22,7 @@ public interface EmployeeDao {
     /**
      * Here we display all employee 
      */
-    public List<Employee> getEmployee();
-
-    /**
-     * Here we update address details of employee
-     *
-     * @param address - address
-     */
-    public void updateAddress(Address address);
-
-    /**
-     * Here we get employee for update
-     *
-     * @param id - id
-     * @return employee
-     */
-    public Employee getEmployeeForUpdate(int id);
-
-    /**
-     * Here we get address value for update
-     *
-     * @param id - id
-     * @return address
-     */
-    public Address getAddressForUpdate(int id);
+    public List<Employee> getEmployees();
 
     /**
      * Here we check id of employee
@@ -60,6 +30,13 @@ public interface EmployeeDao {
      * @param id - id
      */
     public int checkId(int id);
+
+    /**
+     * Here we check deleted employee id
+     *
+     * @param id - id
+     */
+    public int checkDeletedId(int id);
 
     /**
      * Here we delete employee details

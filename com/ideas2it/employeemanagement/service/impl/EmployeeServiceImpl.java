@@ -28,7 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Date dateOfBirth, String mobileNumber, String emailId) {
         Employee employee = new Employee(name, salary, 
                 dateOfBirth, mobileNumber, emailId);
-        employeeDao.insertEmployee(employee);
+        employeeDao.saveOrUpdateEmployee(employee);
     }
 
     /**
@@ -89,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<String> getAllEmployee() {
         List<String> employeeDetails = new ArrayList<String>();       
-        List<Employee> employeeValues = employeeDao.getEmployee();
+        List<Employee> employeeValues = employeeDao.getEmployees();
 
         for (Employee employee : employeeValues) {
              employeeDetails.add(employee.toString());
@@ -103,7 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override    
     public void updateEmployee(int id, String name, double salary, 
             Date dateOfBirth, String emailId, String mobileNumber) {
-        Employee employee = employeeDao.getEmployeeForUpdate(id);             
+        Employee employee = employeeDao.getIndividualEmployee(id);             
         employee.setId(id);
         employee.setName(name);
         employee.setSalary(salary);
@@ -118,7 +118,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void updateSalary(int id, double salary) {
-        Employee employee = employeeDao.getEmployeeForUpdate(id);
+        Employee employee = employeeDao.getIndividualEmployee(id);
         employee.setId(id);   
         employee.setSalary(salary); 
         employeeDao.saveOrUpdateEmployee(employee);
@@ -129,7 +129,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void updateDateOfBirth(int id, Date dateOfBirth) {
-        Employee employee = employeeDao.getEmployeeForUpdate(id);
+        Employee employee = employeeDao.getIndividualEmployee(id);
         employee.setId(id);
         employee.setDateOfBirth(dateOfBirth);
         employeeDao.saveOrUpdateEmployee(employee);
@@ -140,7 +140,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void updateEmailId(int id, String emailId) {
-        Employee employee = employeeDao.getEmployeeForUpdate(id);
+        Employee employee = employeeDao.getIndividualEmployee(id);
         employee.setId(id);
         employee.setEmailId(emailId);
         employeeDao.saveOrUpdateEmployee(employee);
@@ -151,7 +151,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */ 
     @Override
     public void updateMobileNumber(int id, String mobileNumber) {
-        Employee employee = employeeDao.getEmployeeForUpdate(id);
+        Employee employee = employeeDao.getIndividualEmployee(id);
         employee.setId(id);
         employee.setMobileNumber(mobileNumber);
         employeeDao.saveOrUpdateEmployee(employee);
@@ -163,16 +163,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateAddress(int id, int addressId, String doorNumber, String streetName,
             String district, String state, String country, int pinCode) {
-        Address address = employeeDao.getAddressForUpdate(id);             
-        address.setId(id);
-        address.setAddressId(addressId);
-        address.setDoorNumber(doorNumber);
-        address.setStreetName(streetName);
-        address.setDistrict(district);
-        address.setState(state);
-        address.setCountry(country);
-        address.setPinCode(pinCode);
-        employeeDao.updateAddress(address);
+        Employee employee = employeeDao.getIndividualEmployee(id);             
+        List<Address> addressValues = employee.getAddresses();
+
+        for (Address address : addressValues) {
+
+            if (addressId == address.getAddressId()) {
+                address.setAddressId(addressId);
+                address.setDoorNumber(doorNumber);
+                address.setStreetName(streetName);
+                address.setDistrict(district);
+                address.setState(state);
+                address.setCountry(country);
+                address.setPinCode(pinCode);
+            }
+        }
+        employeeDao.saveOrUpdateEmployee(employee);
     }
 
     /**
@@ -188,10 +194,22 @@ public class EmployeeServiceImpl implements EmployeeService {
      * {@inheritdoc}
      */
     @Override
+    public boolean checkDeletedId(int id) {        
+        int employee = employeeDao.checkDeletedId(id);      
+        return (employee == 0) ? false : true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    @Override
     public void deleteEmployee(int id) {
         Employee employee = employeeDao.getIndividualEmployee(id);
+        List<Project> project = employee.getProjects();
+        project.clear();
         employee.setId(id);
         employee.setIsDeleted(true);
+        employee.setProjects(project);
         employeeDao.saveOrUpdateEmployee(employee);
     } 
 
@@ -307,7 +325,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<Employee> getEmployeeValues(List<Integer> employeeList) {
-        List<Employee> employee = employeeDao.getEmployee();
+        List<Employee> employee = employeeDao.getEmployees();
         List<Employee> employeeData = new ArrayList<Employee>();          
         
         for (Employee employeeDetails : employee) {

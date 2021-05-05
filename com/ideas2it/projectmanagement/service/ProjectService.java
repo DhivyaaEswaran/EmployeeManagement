@@ -34,6 +34,13 @@ public interface ProjectService {
      * @param id
      */
     public void restoreProject(int projectId);
+
+    /**
+     * Here we check id that was deleted
+     *
+     * @param id - id
+     */
+    public boolean checkDeletedId(int projectId); 
         
     /**
      * Here we display individual details of project

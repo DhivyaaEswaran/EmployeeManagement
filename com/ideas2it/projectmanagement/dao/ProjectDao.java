@@ -12,13 +12,6 @@ import com.ideas2it.projectmanagement.model.Project;
 public interface ProjectDao {
 
     /**
-     * Here we insert the details for project
-     *
-     * @param project - project
-     */
-    public void createProject(Project project);
-
-    /**
      * Here we delete details of project
      *
      * @param projectId
@@ -34,25 +27,12 @@ public interface ProjectDao {
     public Project getIndividualProject(int projectId);
 
     /**
-     * Here we update the details of project
+     * Here we dispaly all projects
      *
-     * @param project - project
-     */   
-    public void updateProject(Project project);
-
-    /**
-     * Here we get projectId for update
-     *
-     * @param projectId - projectId
+     * @param id - id
+     * @return list
      */
-    public Project getProjectForUpdate(int projectId);
-
-    /**
-     * Here we display all the project details
-     *
-     * @return project 
-     */
-    public List<Project> getProject();
+    public List<Project> getProjects(); 
 
     /**
      * Here we check project id
@@ -60,4 +40,11 @@ public interface ProjectDao {
      * @param projectId - projectId
      */
     public int checkId(int projectId);
+
+    /**
+     * Here we check id that was deleted
+     *
+     * @param id - id
+     */
+    public int checkDeletedId(int projectId);
 }

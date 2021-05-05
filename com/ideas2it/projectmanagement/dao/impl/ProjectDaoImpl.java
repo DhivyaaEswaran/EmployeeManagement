@@ -4,12 +4,13 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.cfg.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Transaction;
  
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.projectmanagement.dao.ProjectDao;
@@ -28,37 +29,12 @@ public class ProjectDaoImpl implements ProjectDao {
      * {@inheritdoc}
      */
     @Override
-    public void createProject(Project project) {
-        Session session = null;
-        Transaction transaction = null;
-
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.save(project);
-            session.getTransaction().commit();
-        } catch (HibernateException exception) {
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-            exception.printStackTrace();
-        } finally {
-            session.close();
-        }    
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    @Override
     public void saveOrUpdateProject(Project project) {
         Session session = null;
         Transaction transaction = null;
 
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
+        try { 
+            session = dataBaseConnectivity.getSessionFactory().openSession();
             session.beginTransaction();
             session.saveOrUpdate(project);   
             session.getTransaction().commit();
@@ -69,7 +45,7 @@ public class ProjectDaoImpl implements ProjectDao {
             }
         e.printStackTrace();
         } finally {
-            session.close();
+            closeSession(session);
         }    
     }   
 
@@ -82,17 +58,13 @@ public class ProjectDaoImpl implements ProjectDao {
          Project project = null;
  
          try {
-             SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-             session = sessionFactory.openSession(); 
+             session = dataBaseConnectivity.getSessionFactory().openSession();
              project = (Project)session.get(Project.class, projectId);
              project.getEmployees().size();                     
          } catch (HibernateException exception) {
              exception.printStackTrace();    
          } finally {
-           
-             if (session != null) {
-                 session.close();
-             }
+             closeSession(session);
          }   
          return project; 
     }
@@ -101,75 +73,20 @@ public class ProjectDaoImpl implements ProjectDao {
      * {@inheritdoc}
      */
     @Override
-    public List<Project> getProject() {
+    public List<Project> getProjects() {
         Session session = null;
-        Project project = null;
-        List<Project> value = null;
+        List<Project> projectValues = null;
  
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();    
+            session = dataBaseConnectivity.getSessionFactory().openSession();    
             Query query = session.createQuery("from Project project WHERE is_deleted = 0");
-            value = (List<Project>) query.list();    
+            projectValues = (List<Project>) query.list();    
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-           
-            if (session != null) {
-                session.close();
-            }
+            closeSession(session);
         }   
-        return value;     
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    @Override
-    public void updateProject(Project project) {
-        Session session = null;
-
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.update(project);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-        e.printStackTrace();
-        } finally {
-            session.close();
-        }     
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    @Override
-    public Project getProjectForUpdate(int projectId) {
-        Transaction transaction = null;
-        Session session = null;
-        Project projects = null;
- 
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction(); 
-            projects = (Project) session.get(Project.class, projectId);
-        } catch (HibernateException exception) {
-
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-            exception.printStackTrace();
-        } finally {
-            session.close();
-        }   
-        return projects; 
+        return projectValues;     
     }
 
     /**
@@ -181,17 +98,48 @@ public class ProjectDaoImpl implements ProjectDao {
         int count = 0;
         
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
+            session = dataBaseConnectivity.getSessionFactory().openSession();
             Query query = session.createQuery("SELECT COUNT(id)"
-                    + " FROM Project project WHERE project_id = :id");
+                    + " FROM Project project WHERE project_id = :id and is_deleted = 0");
             query.setParameter("id", projectId);
             count = ((Long)query.uniqueResult()).intValue();          
         } catch (HibernateException exception) { 
             exception.printStackTrace();               
         } finally {
-            session.close();
+            closeSession(session);
         } 
         return count;  
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    @Override
+    public int checkDeletedId(int projectId) {
+        Session session = null;
+        int count = 0;
+        
+        try {
+            session = dataBaseConnectivity.getSessionFactory().openSession();
+            Query query = session.createQuery("SELECT COUNT(id)"
+                    + " FROM Project project WHERE project_id = :id and is_deleted = 1");
+            query.setParameter("id", projectId);
+            count = ((Long)query.uniqueResult()).intValue();          
+        } catch (HibernateException exception) { 
+            exception.printStackTrace();               
+        } finally {
+            closeSession(session);
+        } 
+        return count;  
+    }
+
+    /**
+     * Here we close session
+     */
+    public void closeSession(Session session) {
+
+        if (session != null) {
+            session.close();
+        }
     }
 } 

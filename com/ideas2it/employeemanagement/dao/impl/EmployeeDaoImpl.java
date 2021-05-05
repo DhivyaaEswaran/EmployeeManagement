@@ -4,12 +4,13 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.cfg.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Transaction;
 
 import com.ideas2it.employeemanagement.dao.EmployeeDao;
 import com.ideas2it.employeemanagement.model.Address;
@@ -28,26 +29,21 @@ public class EmployeeDaoImpl implements EmployeeDao {
      * {@inheritdoc}
      */
     @Override
-    public void insertEmployee(Employee employee) {        
+    public void saveOrUpdateEmployee(Employee employee) {
         Session session = null;
-        Transaction transaction = null;
-        
+
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
+            session = dataBaseConnectivity.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(employee);
+            session.saveOrUpdate(employee);   
             session.getTransaction().commit();
-        } catch (HibernateException exception) {
- 
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-            exception.printStackTrace();
+        } catch (HibernateException e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
         } finally {
-            session.close();
-        }
-    }
+            closeSession(session);
+        }  
+    }    
 
     /**
      * {@inheritdoc}
@@ -58,18 +54,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
         Employee employee = null;
   
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
+            session = dataBaseConnectivity.getSessionFactory().openSession();
             employee = (Employee) session.get(Employee.class, id);           
             employee.getAddresses().size();
             employee.getProjects().size();
         } catch (HibernateException exception) {
             exception.printStackTrace();     
         } finally {
-           
-            if (session != null) {
-                 session.close();
-            }
+            closeSession(session);
         }   
         return employee; 
     }
@@ -78,103 +70,23 @@ public class EmployeeDaoImpl implements EmployeeDao {
      * {@inheritdoc}
      */
     @Override
-    public List<Employee> getEmployee() {
+    public List<Employee> getEmployees() {
         Session session = null;
         Project project = null;
         List<Employee> value = null;
  
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();    
+            session = dataBaseConnectivity.getSessionFactory().openSession();    
             Query query = session.createQuery("from Employee employee WHERE is_deleted = 0");
             value = (List<Employee>) query.list();    
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-           
-            if (session != null) {
-                session.close();
-            }
+            closeSession(session);
         }   
         return value;         
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    @Override
-    public void updateAddress(Address address) {
-        Session session = null;
-
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.update(address);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-        e.printStackTrace();
-        } finally {
-            session.close();
-        }     
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    @Override
-    public Employee getEmployeeForUpdate(int id) { 
-        Transaction transaction = null;
-        Session session = null;
-        Employee employees = null;
- 
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction(); 
-            employees = (Employee) session.get(Employee.class, id);
-        } catch (HibernateException exception) {
-
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-            exception.printStackTrace();
-        } finally {
-            session.close();
-        }   
-        return employees; 
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    @Override
-    public Address getAddressForUpdate(int id) { 
-        Transaction transaction = null;
-        Session session = null;
-        Address address = null;
- 
-        try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction(); 
-            address = (Address) session.get(Address.class, id);
-        } catch (HibernateException exception) {
-
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-            exception.printStackTrace();
-        } finally {
-            session.close();
-        }   
-        return address; 
-    }
-    
     /**
      * {@inheritdoc}
      */
@@ -184,16 +96,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
         int count = 0;
         
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
+            session = dataBaseConnectivity.getSessionFactory().openSession();
             Query query = session.createQuery("SELECT COUNT(id)"
-                    + " FROM Employee employee WHERE id = :id");
+                    + " FROM Employee employee WHERE id = :id and is_deleted = 0");
             query.setParameter("id", id);
             count = ((Long)query.uniqueResult()).intValue();          
         } catch (HibernateException exception) { 
             exception.printStackTrace();               
         } finally {
-            session.close();
+            closeSession(session);
         } 
         return count;  
     }
@@ -202,24 +113,31 @@ public class EmployeeDaoImpl implements EmployeeDao {
      * {@inheritdoc}
      */
     @Override
-    public void saveOrUpdateEmployee(Employee employee) {
+    public int checkDeletedId(int id) {
         Session session = null;
-        Transaction transaction = null;
-
+        int count = 0;
+        
         try {
-            SessionFactory sessionFactory = dataBaseConnectivity.getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.saveOrUpdate(employee);   
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-
-            if (transaction != null) {
-                session.getTransaction().rollback();
-            }
-        e.printStackTrace();
+            session = dataBaseConnectivity.getSessionFactory().openSession();
+            Query query = session.createQuery("SELECT COUNT(id)"
+                    + " FROM Employee employee WHERE id = :id and is_deleted = 1");
+            query.setParameter("id", id);
+            count = ((Long)query.uniqueResult()).intValue();          
+        } catch (HibernateException exception) { 
+            exception.printStackTrace();               
         } finally {
+            closeSession(session);
+        } 
+        return count;  
+    }
+
+    /**
+     * Here we close session
+     */
+    public void closeSession(Session session) {
+
+        if (session != null) {
             session.close();
-        }  
-    }    
+        }
+    }
 }           

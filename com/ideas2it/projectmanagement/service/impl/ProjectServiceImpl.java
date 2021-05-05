@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
             Date startDate, Date endDate, String manager) {
         Project project = new Project(projectName,
                 startDate, endDate, manager);
-        projectDao.createProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
 
     /**
@@ -36,8 +36,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProject(int projectId) {
         Project project = projectDao.getIndividualProject(projectId);
+        List<Employee> employee = project.getEmployees();
+        employee.clear();
         project.setProjectId(projectId);
         project.setIsDeleted(true);
+        project.setEmployees(employee);
         projectDao.saveOrUpdateProject(project);    
     }
 
@@ -51,6 +54,15 @@ public class ProjectServiceImpl implements ProjectService {
         project.setIsDeleted(false);
         projectDao.saveOrUpdateProject(project);    
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    @Override
+    public boolean checkDeletedId(int projectId) {
+        int project = projectDao.checkDeletedId(projectId);      
+        return (project == 0) ? false : true;
+    }          
 
     /**
      * {@inheritdoc}
@@ -74,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<String> getProject() {
         List<String> projectValues = new ArrayList<String>();
-        List<Project> projectDetails = projectDao.getProject(); 
+        List<Project> projectDetails = projectDao.getProjects(); 
         
         for (Project project : projectDetails) {
             projectValues.add(project.toString());
@@ -88,13 +100,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProject(int projectId, String projectName,
             Date startDate, Date endDate, String manager) {
-        Project project = projectDao.getProjectForUpdate(projectId);       
+        Project project = projectDao.getIndividualProject(projectId);       
         project.setProjectId(projectId);
         project.setProjectName(projectName);
         project.setStartDate(startDate);
         project.setEndDate(endDate);
         project.setManager(manager);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
 
     /**
@@ -102,10 +114,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public void updateName(int projectId, String projectName) {
-        Project project = projectDao.getProjectForUpdate(projectId);
+        Project project = projectDao.getIndividualProject(projectId);
         project.setProjectId(projectId);
         project.setProjectName(projectName);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }   
 
     /**
@@ -113,10 +125,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public void updateStartDate(int projectId, Date startDate) {
-        Project project = projectDao.getProjectForUpdate(projectId);    
+        Project project = projectDao.getIndividualProject(projectId);    
         project.setProjectId(projectId);
         project.setStartDate(startDate);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
 
     /**
@@ -124,10 +136,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public void updateEndDate(int projectId, Date endDate) {
-        Project project = projectDao.getProjectForUpdate(projectId);
+        Project project = projectDao.getIndividualProject(projectId);
         project.setProjectId(projectId);
         project.setEndDate(endDate);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
 
     /**
@@ -135,10 +147,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public void updateManager(int projectId, String manager) {
-        Project project = projectDao.getProjectForUpdate(projectId);
+        Project project = projectDao.getIndividualProject(projectId);
         project.setProjectId(projectId);   
         project.setManager(manager);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
  
     /**
@@ -192,7 +204,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public List<Project> getProjectValues(List<Integer> projectId) {
-        List<Project> project = projectDao.getProject();
+        List<Project> project = projectDao.getProjects();
         List<Project> projectData = new ArrayList<Project>();          
         
         for (Project projectDetails : project) {
@@ -217,7 +229,7 @@ public class ProjectServiceImpl implements ProjectService {
         assignedEmployee.addAll(employee);
         project.setProjectId(projectId);
         project.setEmployees(assignedEmployee);
-        projectDao.updateProject(project);
+        projectDao.saveOrUpdateProject(project);
     }
 
     /**
@@ -242,7 +254,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         project.setProjectId(projectId);
         project.setEmployees(assignedEmployee);
-        projectDao.updateProject(project);    
+        projectDao.saveOrUpdateProject(project);    
     }
 
     /**

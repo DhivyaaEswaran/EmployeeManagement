@@ -46,6 +46,15 @@ public class ProjectController {
     }
 
     /**
+     * Here we check id that was deleted
+     *
+     * @param id - id
+     */
+    public boolean checkDeletedId(int projectId) {
+        return projectService.checkDeletedId(projectId);
+    }
+
+    /**
      * Here we display individual details of project
      *
      * @param id - id

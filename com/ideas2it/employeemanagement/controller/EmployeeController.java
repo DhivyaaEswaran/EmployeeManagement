@@ -169,6 +169,15 @@ public class EmployeeController {
     }
 
     /**
+     * Here we check deleted employee id 
+     *
+     * @param id - id
+     */
+    public boolean checkDeletedId(int id) {
+        return employeeService.checkDeletedId(id);
+    }
+
+    /**
      * Here we delete details of employee
      *
      * @param id - id

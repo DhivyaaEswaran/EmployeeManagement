@@ -122,8 +122,13 @@ public class ProjectView {
      */
     public void deleteProject() {
         int projectId = getId();
-        projectController.deleteProject(projectId);
-        System.out.println("Successfully deleted");
+         
+        if (projectController.checkId(projectId)) { 
+            projectController.deleteProject(projectId);
+            System.out.println("Successfully deleted");
+        } else {
+            System.out.println("Invalid id");
+        }
     }
    
     /**
@@ -131,8 +136,13 @@ public class ProjectView {
      */
     public void restoreProject() {
         int projectId = getId();
-        projectController.restoreProject(projectId);
-        System.out.println("Successfully restored");
+
+        if (projectController.checkDeletedId(projectId)) {
+            projectController.restoreProject(projectId);
+            System.out.println("Successfully restored");
+        } else {
+            System.out.println("Invalid id");
+        }
     }
 
     /**
@@ -241,34 +251,39 @@ public class ProjectView {
     public void updateIndividualProject() {
         System.out.println("\nUPDATE INDIVIDUAL PROJECT DETAILS"
                 + "\nENTER THE PROJECT ID TO BE UPDATED");
-        int id = scanner.nextInt();
+        int projectId = scanner.nextInt();
         int userOption;
 
-        do {
-            System.out.println("\nSELECT AN OPTION THAT YOU WANT TO PERFORM"
-                    + "\n1. NAME \n2. STARTDATE \n3. ENDDATE"
-                    + "\n4. MANAGER \n5. EXIT");
-            userOption = scanner.nextInt();
+        if (projectController.checkId(projectId)) { 
+
+            do {
+                System.out.println("\nSELECT AN OPTION THAT YOU WANT TO PERFORM"
+                        + "\n1. NAME \n2. STARTDATE \n3. ENDDATE"
+                        + "\n4. MANAGER \n5. EXIT");
+                userOption = scanner.nextInt();
             
-            switch (userOption) {
-                case 1:  String name = getName();
-                         projectController.updateName(id, name);
-                         break;
-                case 2:  Date startDate = getStartDate();
-                         projectController.updateStartDate(id, startDate);
-                         break;
-                case 3:  Date endDate = getEndDate();
-                         projectController.updateEndDate(id, endDate);
-                         break;
-                case 4:  String manager = getManager();
-                         projectController.updateManager(id, manager);
-                         break;
-                case 5:  System.out.println("EXIT");
-                         break;
-                default: System.out.println("\nINVALID ENTRY");
-                         continue;
-            }
-        } while (5 != userOption);
+                switch (userOption) {
+                    case 1:  String name = getName();
+                             projectController.updateName(projectId, name);
+                             break;
+                    case 2:  Date startDate = getStartDate();
+                             projectController.updateStartDate(projectId, startDate);
+                             break;
+                    case 3:  Date endDate = getEndDate();
+                             projectController.updateEndDate(projectId, endDate);
+                             break;
+                    case 4:  String manager = getManager();
+                             projectController.updateManager(projectId, manager);
+                             break;
+                    case 5:  System.out.println("EXIT");
+                             break;
+                    default: System.out.println("\nINVALID ENTRY");
+                             continue;
+                }
+            } while (5 != userOption);
+        } else {
+            System.out.println("Invalid id");
+        }  
     }
 
     /**
@@ -285,21 +300,25 @@ public class ProjectView {
      */
     public void assignEmployee() {                       
         int projectId = getId();
-        System.out.println("How many employee you need to assign:");
-        int count = scanner.nextInt();
         List<Integer> employeeIdList = new ArrayList<Integer>();
 
-        for (int index = 0; index < count; index++) {
-            employeeIdList.add(getEmployeeId());
-        }     
-        List<List<Integer>> employeeIdForAssign   
-                = projectController.checkIdForAssignAndUnassign(projectId, employeeIdList); 
+        if (projectController.checkId(projectId)) {
+            System.out.println("How many employee you need to assign:");
+            int count = scanner.nextInt();
+            for (int index = 0; index < count; index++) {
+                employeeIdList.add(getEmployeeId());
+            }     
+            List<List<Integer>> employeeIdForAssign   
+                    = projectController.checkIdForAssignAndUnassign(projectId, employeeIdList); 
 
-        if (employeeIdForAssign.get(1).isEmpty()) { 
-            System.out.println("Employee already assigned");
-        } else {       
-            projectController.assignEmployee(projectId, employeeIdForAssign.get(1));
-            System.out.println("\nVales have been assigned");
+            if (employeeIdForAssign.get(1).isEmpty()) { 
+                System.out.println("Employee already assigned");
+            } else {       
+                projectController.assignEmployee(projectId, employeeIdForAssign.get(1));
+                System.out.println("\nValues have been assigned");
+            }
+        } else {
+            System.out.println("Invalid id");
         }
     }
 
@@ -308,34 +327,44 @@ public class ProjectView {
      */
     public void unassignEmployee() {
        int projectId = getId();
-       System.out.println("How many employee you need to unassign:");
-       int count = scanner.nextInt();
+       
        List<Integer> employeeIdList = new ArrayList<Integer>();
 
-       for (int index = 0; index < count; index++) {
-           employeeIdList.add(getEmployeeId());
-       }        
-       List<List<Integer>> employeeIdForUnassign 
-               = projectController.checkIdForAssignAndUnassign(projectId, employeeIdList); 
-       System.out.println(employeeIdForUnassign.get(0));
-       if (employeeIdForUnassign.get(0).isEmpty()) {
-           System.out.println("Already unassigned");
-       } else {          
-           projectController.unassignEmployee(projectId, employeeIdForUnassign.get(0));
-           System.out.println("\nValues have been unassigned");
-       }
+       if (projectController.checkId(projectId)) {
+           System.out.println("How many employee you need to unassign:");
+           int count = scanner.nextInt();
+           for (int index = 0; index < count; index++) {
+               employeeIdList.add(getEmployeeId());
+           }        
+           List<List<Integer>> employeeIdForUnassign 
+                   = projectController.checkIdForAssignAndUnassign(projectId, employeeIdList); 
+           System.out.println(employeeIdForUnassign.get(0));
+           if (employeeIdForUnassign.get(0).isEmpty()) {
+               System.out.println("Already unassigned");
+           } else {          
+               projectController.unassignEmployee(projectId, employeeIdForUnassign.get(0));
+               System.out.println("\nValues have been unassigned");
+           }
+        } else {
+            System.out.println("Invalid id");
+        }
     }
 
     /**
      * Here we display assigned employees
      */
     public void displayAssignedEmployee() {
-        int id = getId();
-        List<String> projects = projectController.getAssignedEmployee(id);
+        int projectId = getId();
+
+        if (projectController.checkId(projectId)) { 
+            List<String> projects = projectController.getAssignedEmployee(projectId);
         
-        for (String projectValues : projects) {
-            System.out.println(projectValues);
-        }
+            for (String projectValues : projects) {
+                System.out.println(projectValues);
+            }
+        } else {
+            System.out.println("Invalid id");
+        }  
     }
 
     /**

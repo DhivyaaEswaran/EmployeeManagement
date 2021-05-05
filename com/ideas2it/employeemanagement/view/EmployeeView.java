@@ -413,21 +413,26 @@ public class EmployeeView {
      */
     public void addEmployeeAddress() {
         int id = getEmployeeId();
-        System.out.println("Door number");
-        String doorNumber = scanner.next();
-        System.out.println("STREET NAME:");
-        String streetName = scanner.skip("[\r\n]+").nextLine();
-        System.out.println("DISTRICT:");
-        String district = scanner.nextLine();
-        System.out.println("STATE:");
-        String state = scanner.nextLine();
-        System.out.println("COUNTRY:");
-        String country = scanner.nextLine();
-        System.out.println("PINCODE:");
-        int pinCode = scanner.nextInt();
-        employeeController.addEmployeeAddress(id, doorNumber, 
-                streetName, district, state, country, pinCode);
-        System.out.println("\naddress details have been created");
+
+        if (employeeController.checkId(id)) {
+            System.out.println("Door number");
+            String doorNumber = scanner.next();
+            System.out.println("STREET NAME:");
+            String streetName = scanner.skip("[\r\n]+").nextLine();
+            System.out.println("DISTRICT:");
+            String district = scanner.nextLine();
+            System.out.println("STATE:");
+            String state = scanner.nextLine();
+            System.out.println("COUNTRY:");
+            String country = scanner.nextLine();
+            System.out.println("PINCODE:");
+            int pinCode = scanner.nextInt();
+            employeeController.addEmployeeAddress(id, doorNumber, 
+                    streetName, district, state, country, pinCode);
+            System.out.println("\naddress details have been created");
+        } else {
+            System.out.println("Invalid id");
+        }
     }    
 
     /**
@@ -472,8 +477,13 @@ public class EmployeeView {
      */
     public void deleteEmployee() {
         int id = getEmployeeId();
-        employeeController.deleteEmployee(id);
-        System.out.println("\nEMPLOYEE HAVE BEEN DELETED");
+
+        if (employeeController.checkId(id)) {
+            employeeController.deleteEmployee(id);
+            System.out.println("\nEMPLOYEE HAVE BEEN DELETED");
+        } else {
+            System.out.println("Invalid id");
+        }
     }
 
     /**
@@ -481,8 +491,13 @@ public class EmployeeView {
      */
     public void restoreEmployee() {
         int id = getEmployeeId();
-        employeeController.restoreEmployee(id);
-        System.out.println("\nEmployee have been restored");
+
+        if (employeeController.checkDeletedId(id)) {
+            employeeController.restoreEmployee(id);
+            System.out.println("\nEmployee have been restored");
+        } else {
+            System.out.println("Invalid id");
+        }
     }
 
     /**
@@ -499,22 +514,26 @@ public class EmployeeView {
      * Here we assign project values for employee
      */
     public void assignProject() {
-        int id = getEmployeeId();
-        System.out.println("How many project you need to assign:");
-        int count = scanner.nextInt();
+        int id = getEmployeeId();        
         List<Integer> projectIdList = new ArrayList<Integer>();
 
-        for (int index = 0; index < count; index++) {
-            projectIdList.add(getProjectId());
-        } 
-        List<List<Integer>> projectIdListForAssign = 
-                employeeController.checkIdForAssignAndUnassign(id, projectIdList);
+        if (employeeController.checkId(id)) {
+            System.out.println("How many project you need to assign:");
+            int count = scanner.nextInt();
+            for (int index = 0; index < count; index++) {
+                projectIdList.add(getProjectId());
+            } 
+            List<List<Integer>> projectIdListForAssign = 
+                    employeeController.checkIdForAssignAndUnassign(id, projectIdList);
 
-        if (projectIdListForAssign.get(1).isEmpty()) {
-            System.out.println("Already assigned");
+            if (projectIdListForAssign.get(1).isEmpty()) {
+                System.out.println("Already assigned");
+            } else {
+                employeeController.assignProject(id, projectIdListForAssign.get(1));
+                System.out.println("\nEmployee details have been assigned");
+            }
         } else {
-            employeeController.assignProject(id, projectIdListForAssign.get(1));
-            System.out.println("\nEmployee details have been assigned");
+            System.out.println("Invalid id");
         }
     }
 
@@ -523,21 +542,26 @@ public class EmployeeView {
      */
     public void unassignProject() {
         int id = getEmployeeId();
-        System.out.println("How many project you need to unassign:");
-        int count = scanner.nextInt();
         List<Integer> projectIdList = new ArrayList<Integer>();
 
-        for (int index = 0; index < count; index++) {
-            projectIdList.add(getProjectId());
-        } 
-        List<List<Integer>> projectIdListForUnassign = 
-                employeeController.checkIdForAssignAndUnassign(id, projectIdList);
+        if (employeeController.checkId(id)) {
 
-        if (projectIdListForUnassign.get(0).isEmpty()) {
-            System.out.println("Already unassigned");
+            System.out.println("How many project you need to unassign:");
+            int count = scanner.nextInt();
+            for (int index = 0; index < count; index++) {
+                projectIdList.add(getProjectId());
+            } 
+            List<List<Integer>> projectIdListForUnassign = 
+                    employeeController.checkIdForAssignAndUnassign(id, projectIdList);
+
+            if (projectIdListForUnassign.get(0).isEmpty()) {
+                System.out.println("Already unassigned");
+            } else {
+                employeeController.unassignProject(id, projectIdListForUnassign.get(0));
+                System.out.println("\nsuccessfully unassigned");
+            }
         } else {
-            employeeController.unassignProject(id, projectIdListForUnassign.get(0));
-            System.out.println("\nsuccessfully unassigned");
+            System.out.println("Invalid id");
         }
     }
 
@@ -546,11 +570,17 @@ public class EmployeeView {
      */
     public void displayAssignedProject() {
         int id = getEmployeeId();
-        List<String> employees = employeeController.getAssignedProject(id);
+
+        if (employeeController.checkId(id)) {
+
+            List<String> employees = employeeController.getAssignedProject(id);
         
-        for (String employeeValues : employees) {
-            System.out.println(employeeValues);    
-        }        
+            for (String employeeValues : employees) {
+                System.out.println(employeeValues);    
+            }  
+        } else {
+            System.out.println("Invalid id");
+        }      
     } 
 
     /**
