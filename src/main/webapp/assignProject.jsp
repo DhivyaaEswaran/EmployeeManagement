@@ -68,8 +68,22 @@ input[type=submit] {
 	color: black;
 	padding: 5px 18px;
 	position: fixed;
-	top: 80%;
-	left: 45%;
+	top: 60%;
+	left: 38%;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-style: bold;
+}
+
+button {
+	background-color: #7DC2F0;
+	border: none;
+	color: black;
+	padding: 5px 18px;
+	position:fixed;
+	top:60%;
+	left:45%;
 	text-decoration: none;
 	display: inline-block;
 	font-size: 16px;
@@ -130,5 +144,6 @@ input[type=submit] {
 		<br> <input type="submit" value="Assign">
 		</form>
 	</div>
+	<a href=ProjectController?action=projectMainPage><button>BACK</button></a>
 </body>
 </html>

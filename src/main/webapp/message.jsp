@@ -1,21 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<title>Insert title here</title>
 <style>
 body {
 	background-image: url('download1.jpg');
 	background-repeat: no-repeat;
 	background-size: 1370px 670px;
-}
-
-p {
-	color: #2E86C1;
-	font-family: fantasy;
-	font-size: 150%;
-	padding-bottom: 25px;
 }
 
 button{
@@ -24,19 +18,26 @@ button{
 	padding: 5px 18px;
 	text-decoration: none;
 	display: inline-block;
-	text-align: center;
+	position: fixed;
+	top: 40%;
+	left: 23%;
 	font-size: 16px;
 	font-style: bold;
 	background-color: #7DC2F0;
 }
+.container{
+position: fixed;
+	top: 30%;
+	left: 23%;
+	font-size: 200%;
+	
+}
 </style>
-<title>Employee Management</title>
 </head>
 <body>
-	<center>
-		<p>WELCOME TO EMPLOYEE MANAGEMENT</p>
-		<a href="EmployeeController?action=employeeMainPage"><button>EMPLOYEE</button></a>&nbsp;&nbsp;&nbsp;
-		<a href="ProjectController?action=projectMainPage"><button>PROJECT</button></a>
-	</center>
+<div class = "container">
+<%= request.getAttribute("message") %>
+</div>
+<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
 </body>
 </html>

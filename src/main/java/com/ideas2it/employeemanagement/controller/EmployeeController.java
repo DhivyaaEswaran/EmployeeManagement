@@ -31,61 +31,49 @@ public class EmployeeController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-        String action= request.getParameter("action");
-        switch (action) {
-        case "index":
-        	index(request, response);
-        	break;
-		case "employeeMainPage":
-			employeeMainPage(request, response);
-			break;
-		case "employeeForm":
-			employeeForm(request, response);
-			break;
-		case "addressForm":
-			addressForm(request, response);
-			break;
-		case "deleteEmployee":
-			deleteEmployee(request, response);
-			break;
-		case "deleteAddress":
-			deleteAddress(request, response);
-			break;
-		case "restore":
-			restore(request, response);
-			break;
-		case "restoreEmployee":
-			restoreEmployee(request, response);
-			break;
-		case "editEmployee":
-			editEmployee(request, response);
-			break;
-		case "editAddress":
-			editAddress(request, response);
-			break;
-		case "viewAddress":
-			viewAddress(request, response);
-			break;
-		case "assignEmployee":
-			assignEmployee(request, response);
-			break;
-		case "assignedEmployee":
-			assignedEmployee(request, response);
-			break;
-		case "displayProject":
-			displayProject(request, response);
-			break;
-		case "assign":
-			assign(request, response);
-			break;
-		case "unassign" :
-			unassign(request, response);
-			break;
-		default:
-			break;
+		String action= request.getParameter("action");
+		switch (action) {
+		case "index": index(request, response);
+		              break;
+		case "employeeMainPage": employeeMainPage(request, response);
+		                       	 break;
+		case "employeeForm": employeeForm(request, response);
+		                  	 break;
+		case "addressForm":	addressForm(request, response);
+			                break;
+		case "goToEditEmployee": goToEditEmployee(request, response);
+		                         break;
+		case "goToEditAddress":	goToEditAddress(request, response);
+			                    break;
+		case "viewAddress":	viewAddress(request, response);
+			                break;	
+		default: doGetOptions(request, response, action);
+			     break;
 		}
 	}
-	
+
+	/**
+	 * @param action 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGetOptions(HttpServletRequest request,
+			HttpServletResponse response, String action) throws ServletException, IOException { 
+		switch (action) {
+		case "deleteEmployee": deleteEmployee(request, response);
+			                   break;
+		case "deleteAddress": deleteAddress(request, response);
+			                  break;
+		case "goToRestore":	goToRestore(request, response);
+			                break;
+		case "restoreEmployee": restoreEmployee(request, response);
+			                    break;
+		case "goToAssignedEmployee": goToAssignedEmployee(request, response);
+			                         break;
+		case "displayProject": displayProject(request, response);
+	                           break;
+		}
+	}
+
 	/**
 	 * Here we redirect index
 	 * @param request
@@ -99,28 +87,6 @@ public class EmployeeController extends HttpServlet {
 	}
 
 	/**
-	 * Here we unassign employee to project
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	private void unassign(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		int employeeId = Integer.parseInt(request.getParameter("id"));
-		List<Integer> projectId = new ArrayList<Integer>();
-		String[] values = request.getParameterValues("selected");
-		for (int index = 0; index < values.length; index++) {
-			projectId.add(Integer.parseInt(values[index]));
-		}
-		List<List<Integer>> unassignEmployee = employeeService
-				.checkIdForAssignAndUnassign(employeeId, projectId);
-        employeeService.unassignProject(employeeId,
-        		unassignEmployee.get(1));
-        employeeMainPage(request, response);
-	}
-
-	/**
 	 * Here we display all projects for assign
 	 * @param request
 	 * @param response
@@ -129,19 +95,19 @@ public class EmployeeController extends HttpServlet {
 	 */
 	private void displayProject(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id"));
-	    List<Project> project = projectService.getProject();
-	    List<String> employeeProject = new ArrayList<String>();
-	    Employee employee = employeeService.getIndividualEmployee(id);
-	    employeeProject.add(employee.toString());
-	    for(Project values : project) {
-	    	employeeProject.add(values.toString());
-	    }
-        request.setAttribute("employeeProject", employeeProject);
-        request.getRequestDispatcher("assignEmployee.jsp").forward(request,
-        		response);
+		int id = Integer.parseInt(request.getParameter("id"));	
+		List<Project> projects = employeeService.displayProjects();
+		List<String> employeeProject = new ArrayList<String>();
+		Employee employee = employeeService.getIndividualEmployee(id);
+		employeeProject.add(employee.toString());
+		for(Project values : projects) {
+			employeeProject.add(values.toString());
+		}
+		request.setAttribute("employeeProject", employeeProject);
+		request.getRequestDispatcher("assignEmployee.jsp").forward(request,
+				response);
 	}
-   
+
 	/**
 	 * Here we pass values and redirect to assignedEmployee
 	 * @param request
@@ -149,51 +115,13 @@ public class EmployeeController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void assignedEmployee(HttpServletRequest request, 
+	private void goToAssignedEmployee(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
 		request.setAttribute("assignEmployee", 
-				employeeService.getAssignedProject(id));
-        request.getRequestDispatcher("assignedEmployee.jsp").forward(request,
-        		response);
-	}
-
-	/**
-	 * Here we assign employee to project
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	private void assign(HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
-		int employeeId = Integer.parseInt(request.getParameter("id"));
-		List<Integer> projectId = new ArrayList<Integer>();
-		String[] values = request.getParameterValues("selected");
-		for (int index = 0; index < values.length; index++) {
-			projectId.add(Integer.parseInt(values[index]));
-		}
-		List<List<Integer>> assignEmployee 
-		        = employeeService.checkIdForAssignAndUnassign(employeeId, projectId);
-        employeeService.assignProject(employeeId, assignEmployee.get(0));
-        request.setAttribute("assignEmployee", 
-        		employeeService.getIndividualEmployee(employeeId));
-        request.getRequestDispatcher("assignedEmployee.jsp").forward(request,
-        		response);
-	}
-
-	/**
-	 * Here we pass values and redirect to assignEmployee
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	private void assignEmployee(HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id"));
-		request.setAttribute("id", id);
-		request.getRequestDispatcher("assignEmployee.jsp").forward(request, response);	
+				employeeService.getIndividualEmployee(id));
+		request.getRequestDispatcher("assignedEmployee.jsp").forward(request,
+				response);
 	}
 
 	/**
@@ -222,13 +150,13 @@ public class EmployeeController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
 		Employee employee = employeeService.getIndividualEmployee(id);
-		List<Address> address = new ArrayList<Address>();
+		List<Address> addresses = new ArrayList<Address>();
 		for (Address addressValue : employee.getAddresses()) {
-		    if(addressValue.getIsDeleted()==false) {
-		    	address.add(addressValue);
-		    }
+			if (false == addressValue.getIsDeleted()) {
+				addresses.add(addressValue);
+			}
 		}
-		request.setAttribute("address", address);
+		request.setAttribute("address", addresses);
 		request.getRequestDispatcher("viewAddress.jsp").forward(request, response);
 	}
 
@@ -239,14 +167,14 @@ public class EmployeeController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void editAddress(HttpServletRequest request, 
+	private void goToEditAddress(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("employeeId"));
+		int id = Integer.parseInt(request.getParameter("id"));
 		int addressId = Integer.parseInt(request.getParameter("addressId"));
 		Employee employee = employeeService.getIndividualEmployee(id);
-		List<Address> address = employee.getAddresses();
+		List<Address> addresses = employee.getAddresses();
 		List<Address> addressList = new ArrayList<Address>();
-		for (Address addressValue:address) {
+		for (Address addressValue:addresses) {
 			if(addressId == addressValue.getAddressId()) {
 				addressList.add(addressValue);
 			}
@@ -265,10 +193,9 @@ public class EmployeeController extends HttpServlet {
 	private void addressForm(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {	
 		int id = Integer.parseInt(request.getParameter("id"));
-		request.setAttribute("employee", 
-				id);
-        request.getRequestDispatcher("addressForm.jsp").forward(request,
-        		response);	
+		request.setAttribute("employee", id);				
+		request.getRequestDispatcher("addressForm.jsp").forward(request,
+				response);	
 	}
 
 	/**
@@ -278,13 +205,13 @@ public class EmployeeController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void editEmployee(HttpServletRequest request, 
+	private void goToEditEmployee(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {	
 		int id = Integer.parseInt(request.getParameter("id"));
 		request.setAttribute("employee", 
 				employeeService.getIndividualEmployee(id));
-        request.getRequestDispatcher("employeeForm.jsp").forward(request,
-        		response);
+		request.getRequestDispatcher("employeeForm.jsp").forward(request,
+				response);
 	}
 
 	/**
@@ -298,7 +225,8 @@ public class EmployeeController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
 		employeeService.restoreEmployee(id);
-		employeeMainPage(request, response);
+		request.setAttribute("message", "Successfully restored");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 
 	/**
@@ -308,9 +236,9 @@ public class EmployeeController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void restore(HttpServletRequest request, 
+	private void goToRestore(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
-	    response.sendRedirect("employeeRestore.jsp");		
+		response.sendRedirect("employeeRestore.jsp");		
 	}
 
 	/**
@@ -322,9 +250,10 @@ public class EmployeeController extends HttpServlet {
 	 */
 	private void deleteEmployee(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {		
-	    int id = Integer.parseInt(request.getParameter("id"));
+		int id = Integer.parseInt(request.getParameter("id"));
 		employeeService.deleteEmployee(id);
-		employeeMainPage(request, response);
+		request.setAttribute("message", "Successfully deleted");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 
 	/**
@@ -339,7 +268,7 @@ public class EmployeeController extends HttpServlet {
 		request.getRequestDispatcher("employeeMainPage.jsp").forward(request,
 				response);
 	}
-	
+
 	/**
 	 * Here we redirect employeeForm
 	 * @param request
@@ -349,10 +278,10 @@ public class EmployeeController extends HttpServlet {
 	 */
 	private void employeeForm(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("employeeForm.jsp").forward(request,
-        		response);
+		request.getRequestDispatcher("employeeForm.jsp").forward(request,
+				response);
 	}
-		
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -360,20 +289,18 @@ public class EmployeeController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		switch (action) {
-		case "insert":
-			insertEmployee(request, response);
-			break;
-		case "update":
-			updateEmployee(request, response);
-			break;
-		case "insertAddress":
-			insertAddress(request, response);
-			break;
-		case "updateAddress":
-			updateAddress(request, response);
-			break;
-		default:
-			break;
+		case "insert": insertEmployee(request, response);
+		               break;
+		case "update": updateEmployee(request, response);
+			           break;
+		case "insertAddress": insertAddress(request, response);
+			                  break;
+		case "updateAddress": updateAddress(request, response);
+			                  break;
+		case "assign": assign(request, response);
+			           break;
+		case "unassign" : unassign(request, response);
+			              break;
 		}
 	}
 
@@ -388,12 +315,12 @@ public class EmployeeController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
 		int addressId = Integer.parseInt(request.getParameter("addressId"));
-		String doorNumber= request.getParameter("doorNumber");
-		String streetName= request.getParameter("streetName");
+		String doorNumber = request.getParameter("doorNumber");
+		String streetName = request.getParameter("streetName");
 		String district = request.getParameter("district");
-		String state= request.getParameter("state");
-		String country= request.getParameter("country");
-		int pinCode= Integer.parseInt(request.getParameter("pinCode"));
+		String state = request.getParameter("state");
+		String country = request.getParameter("country");
+		int pinCode = Integer.parseInt(request.getParameter("pinCode"));
 		employeeService.updateAddress(id, addressId, doorNumber, 
 				streetName, district, state, country, pinCode);
 		employeeMainPage(request, response);
@@ -409,12 +336,12 @@ public class EmployeeController extends HttpServlet {
 	private void insertAddress(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
-		String doorNumber= request.getParameter("doorNumber");
-		String streetName= request.getParameter("streetName");
+		String doorNumber = request.getParameter("doorNumber");
+		String streetName = request.getParameter("streetName");
 		String district = request.getParameter("district");
-		String state= request.getParameter("state");
-		String country= request.getParameter("country");
-		int pinCode= Integer.parseInt(request.getParameter("pinCode"));
+		String state = request.getParameter("state");
+		String country = request.getParameter("country");
+		int pinCode = Integer.parseInt(request.getParameter("pinCode"));
 		employeeService.addEmployeeAddress(id, doorNumber,
 				streetName, district, state, country, pinCode);
 		viewAddress(request, response);
@@ -431,13 +358,14 @@ public class EmployeeController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {		
 		int id = Integer.parseInt(request.getParameter("id"));
 		String name = request.getParameter("name");
-        double salary = Double.parseDouble(request.getParameter("salary"));
-	    Date dateOfBirth = Date.valueOf(request.getParameter("dateOfBirth"));
-	    String emailId = request.getParameter("emailId");
-	    String mobileNumber = request.getParameter("mobileNumber");
+		double salary = Double.parseDouble(request.getParameter("salary"));
+		Date dateOfBirth = Date.valueOf(request.getParameter("dateOfBirth"));
+		String mobileNumber = request.getParameter("mobileNumber");
+		String emailId = request.getParameter("emailId");  
 		employeeService.updateEmployee(id, name, salary, 
-				dateOfBirth, emailId, mobileNumber);
-        employeeMainPage(request, response);
+				dateOfBirth, mobileNumber, emailId);
+		request.setAttribute("message", "Successfully updated");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 
 	/**
@@ -449,13 +377,61 @@ public class EmployeeController extends HttpServlet {
 	 */
 	private void insertEmployee(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {		
-        String name = request.getParameter("name");
-        double salary = Double.parseDouble(request.getParameter("salary"));
-	    Date dateOfBirth = Date.valueOf(request.getParameter("dateOfBirth"));
-	    String emailId = request.getParameter("emailId");
-	    String mobileNumber = request.getParameter("mobileNumber");
-	    employeeService.createEmployee(name, salary,
-	    		dateOfBirth, mobileNumber, emailId);
-	    employeeMainPage(request, response);
+		String name = request.getParameter("name");
+		double salary = Double.parseDouble(request.getParameter("salary"));
+		Date dateOfBirth = Date.valueOf(request.getParameter("dateOfBirth"));
+		String mobileNumber = request.getParameter("mobileNumber");
+		String emailId = request.getParameter("emailId");
+		employeeService.createEmployee(name, salary,
+				dateOfBirth, mobileNumber, emailId);
+		request.setAttribute("message", "Successfully inserted");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
+	}
+
+	/**
+	 * Here we assign employee to project
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	private void assign(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		int employeeId = Integer.parseInt(request.getParameter("id"));
+		List<Integer> projectIdList = new ArrayList<Integer>();
+		String[] values = request.getParameterValues("selected");
+		for (int index = 0; index < values.length; index++) {
+			projectIdList.add(Integer.parseInt(values[index]));
+		}
+		List<Integer> employeeList 
+		= employeeService.checkIdForAssignAndUnassign(employeeId, projectIdList, "assign");
+		employeeService.assignProject(employeeId, employeeList);
+		request.setAttribute("assignEmployee", 
+				employeeService.getIndividualEmployee(employeeId));
+		request.getRequestDispatcher("assignedEmployee.jsp").forward(request,
+				response);
+	}
+
+	/**
+	 * Here we unassign employee to project
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	private void unassign(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int employeeId = Integer.parseInt(request.getParameter("id"));
+		List<Integer> projectIdList = new ArrayList<Integer>();
+		String[] values = request.getParameterValues("selected");
+		for (int index = 0; index < values.length; index++) {
+			projectIdList.add(Integer.parseInt(values[index]));
+		}
+		List<Integer> employeeList = employeeService
+				.checkIdForAssignAndUnassign(employeeId, projectIdList, "unassign");
+		employeeService.unassignProject(employeeId,
+				employeeList);
+		request.setAttribute("message", "Successfully unassigned");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 }

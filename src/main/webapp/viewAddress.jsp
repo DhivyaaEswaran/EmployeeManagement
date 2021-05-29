@@ -53,6 +53,19 @@ p {
 	color: black;
 	font-family: sans-serif;
 }
+button{
+	color: black;
+	border: none;
+	padding: 5px 18px;
+	text-decoration: none;
+	display: inline-block;
+	position: fixed;
+	top: 50%;
+	left: 45%;
+	font-size: 16px;
+	font-style: bold;
+	background-color: #7DC2F0;
+}
 </style>
 </head>
 <body>
@@ -82,7 +95,7 @@ p {
 						<td><c:out value="${addresses.country}" /></td>
 						<td><c:out value="${addresses.pinCode}" /></td>
 						<td><a
-							href="EmployeeController?action=editAddress&addressId=<c:out value="${addresses.addressId}"/>&employeeId=<c:out value="${addresses.employee.id}"/>">Edit</a>&nbsp;&nbsp;
+							href="EmployeeController?action=goToEditAddress&addressId=<c:out value="${addresses.addressId}"/>&id=<c:out value="${addresses.employee.id}"/>">Edit</a>&nbsp;&nbsp;
 							<a
 							href="EmployeeController?action=deleteAddress&addressId=<c:out value="${addresses.addressId }"/>&employeeId=<c:out value="${addresses.employee.id }"/>">Delete</a>&nbsp;&nbsp;
 						</td>
@@ -91,5 +104,7 @@ p {
 			</tbody>
 		</table>
 	</div>
+	<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
+	
 </body>
 </html>

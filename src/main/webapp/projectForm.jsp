@@ -39,6 +39,20 @@ input[type=submit] {
 	font-size: 16px;
 	font-style: bold;
 }
+
+button {
+	background-color: #7DC2F0;
+	border: none;
+	color: black;
+	padding: 5px 18px;
+	position:fixed;
+	top:75%;
+	left:24%;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-style: bold;
+}
 </style>
 </head>
 <body>
@@ -69,5 +83,6 @@ input[type=submit] {
 			<input type="submit" value="SUBMIT">
 		</form>
 	</div>
+	<a href=ProjectController?action=projectMainPage><button>BACK</button></a>
 </body>
 </html>

@@ -66,8 +66,21 @@ input[type=submit] {
 	color: black;
 	padding: 5px 18px;
 	position: fixed;
-	top: 80%;
+	top: 70%;
 	left: 40%;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-style: bold;
+}
+button{
+	background-color: white;
+	border: none;
+	color: black;
+	padding: 5px 18px;
+	position: fixed;
+	top: 70%;
+	left: 50%;
 	text-decoration: none;
 	display: inline-block;
 	font-size: 16px;
@@ -113,7 +126,7 @@ input[type=submit] {
         String project = employees.get(index);
         String[] projectList = project.split(",");  
     %>
-				<form action="EmployeeController" method="get">
+				<form action="EmployeeController" method="post">
 					<tr>
 						<td><%=projectList[0]%></td>
 						<td><%=projectList[1]%></td>
@@ -128,5 +141,7 @@ input[type=submit] {
 		<br> <input type="submit" value="Assign">
 		</form>
 	</div>
+	<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
+	
 </body>
 </html>

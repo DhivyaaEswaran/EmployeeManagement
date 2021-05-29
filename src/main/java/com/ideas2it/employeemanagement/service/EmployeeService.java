@@ -69,7 +69,7 @@ public interface EmployeeService {
      * @param emailId - Employee emailId
      */
     public void updateEmployee(int id, String name, double salary, 
-            Date dateOfBirth, String emailId, String mobileNumber);
+            Date dateOfBirth, String mobileNumber, String emailId);
 
     /**
      * Here we update salary for individual employee 
@@ -189,13 +189,19 @@ public interface EmployeeService {
      * @param id - employee id
      * @param projectId - project id
      */
-    public List<List<Integer>> checkIdForAssignAndUnassign(int id,
-            List<Integer> projectIdList);
+    public List<Integer> checkIdForAssignAndUnassign(int id,
+            List<Integer> projectIdList, String value);
 
     /**
      * Here we display assigned values
      *
      * @param id - employeeId
      */
-    public List<Project> getAssignedProject(int id);  
+    public List<Project> getAssignedProject(int id);
+    
+    /**
+     * 
+     * @return
+     */
+    public List<Project> displayProjects();
 } 

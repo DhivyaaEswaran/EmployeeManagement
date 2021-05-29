@@ -47,6 +47,19 @@ p {
 	color: black;
 	font-family: sans-serif;
 }
+button{
+	color: black;
+	border: none;
+	padding: 5px 18px;
+	text-decoration: none;
+	display: inline-block;
+	position: fixed;
+	top: 87%;
+	left: 23%;
+	font-size: 16px;
+	font-style: bold;
+	background-color: #7DC2F0;
+}
 </style>
 </head>
 <body>
@@ -64,25 +77,29 @@ p {
 	<div class="container">
 		<br> <label>Door Number: </label> <br> <input type="text"
 			name="doorNumber"placeHolder="enter door number" size="50"
-			value="<c:out value='${address.get(0).doorNumber}' />"> <br>
+			value="<c:out value='${address.get(0).doorNumber}' />"> <br><br>
 		<label>Street Name: </label><br> <input type="text"
 			name="streetName" placeHolder="enter street name" size="50"
-			value="<c:out value='${address.get(0).streetName}' />"> <br>
+			value="<c:out value='${address.get(0).streetName}' />"> <br><br>
 		<label>District: </label><br> <input type="text" name="district" placeHolder="enter district"
-			size="50" value="<c:out value='${address.get(0).district}' />">
-		<br> <label>State: </label><br> <input type="text"
+			size="50" value="<c:out value='${address.get(0).district}' />"><br><br>
+		<label>State: </label><br> <input type="text"
 			name="state"  placeHolder="enter state" size="50"
-			value="<c:out value='${address.get(0).state}' />"> <br>
+			value="<c:out value='${address.get(0).state}' />"> <br><br>
 		<label>Country: </label><br> <input type="text" name="country" placeHolder="enter country"
-			size="50" value="<c:out value='${address.get(0).country}' />">
-		<br> <label>Pin code: </label><br> <input type="text"
+			size="50" value="<c:out value='${address.get(0).country}' />"><br><br>
+		 <label>Pin code: </label><br> <input type="text"
 			name="pinCode" placeHolder="enter pin code"size="50"
 			value="<c:out value='${address.get(0).pinCode}' />"> <br>
-		<input type="hidden" name="id" value="<%=request.getParameter("employeeId")%>"><br><br>
+		<input type="hidden" name="id" value="<%=request.getParameter("id")%>"><br><br>
 		<input type="hidden" name="addressId"
 			value="${address.get(0).addressId}"> <input type="submit"
 			value="SUBMIT">
-		</form>
+			
+		
 	</div>
+	</form>
+	<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
+	
 </body>
 </html>

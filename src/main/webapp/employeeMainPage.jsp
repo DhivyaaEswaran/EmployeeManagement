@@ -98,7 +98,7 @@ button {
 		<li><b><a href="EmployeeController?action=employeeForm">ADD
 					EMPLOYEE</a></b></li>
 
-		<li><b><a href="EmployeeController?action=restore">RESTORE
+		<li><b><a href="EmployeeController?action=goToRestore">RESTORE
 					EMPLOYEE</a></b></li>
 	</ul>
 	<p>
@@ -113,7 +113,7 @@ button {
 					<th>Salary</th>
 					<th>Dob</th>
 					<th>Emailid</th>
-					<th>Mobile number</th>
+					<th>Mobile Number</th>
 					<th>Options</th>
 				</tr>
 			</thead>
@@ -127,7 +127,7 @@ button {
 						<td><c:out value="${employee.emailId}" /></td>
 						<td><c:out value="${employee.mobileNumber}" /></td>
 						<td><a
-							href="EmployeeController?action=editEmployee&id=<c:out value='${employee.id}'/>"><button>Edit</button></a>
+							href="EmployeeController?action=goToEditEmployee&id=<c:out value='${employee.id}'/>"><button>Edit</button></a>
 							<a
 							href="EmployeeController?action=deleteEmployee&id=<c:out value='${employee.id}'/>"><button>Delete</button></a>
 							<a href="EmployeeController?action=addressForm&id=<c:out value='${employee.id}'/>"><button>Add address</button></a> <a
@@ -135,7 +135,7 @@ button {
 									address</button></a> <a
 							href="EmployeeController?action=displayProject&id=<c:out value='${employee.id}'/>"><button>Assign</button></a>
 							<a
-							href="EmployeeController?action=assignedEmployee&id=<c:out value='${employee.id}'/>"><button>Unassign</button></a>
+							href="EmployeeController?action=goToAssignedEmployee&id=<c:out value='${employee.id}'/>"><button>Unassign</button></a>
 						</td>
 					</tr>
 				</c:forEach>

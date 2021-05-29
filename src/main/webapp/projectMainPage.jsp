@@ -78,7 +78,7 @@ button {
 </head>
 <body>
 	<ul>
-		<li><b><a href="ProjectController?action=index">HOME</a></b></li>
+		<li><b><a href="EmployeeController?action=index">HOME</a></b></li>
 		<li><b><a href="ProjectController?action=projectForm">ADD
 					PROJECT</a></b></li>
 		<li><b><a href="ProjectController?action=restore">RESTORE</a></b></li>
@@ -107,13 +107,13 @@ button {
 						<td><c:out value="${project.endDate}" /></td>
 						<td><c:out value="${project.manager}" /></td>
 						<td><a
-							href="ProjectController?action=editProject&projectId=<c:out value='${project.projectId}'/>"><button>Edit</button></a>&nbsp;&nbsp;
+							href="ProjectController?action=goToEditProject&projectId=<c:out value='${project.projectId}'/>"><button>Edit</button></a>&nbsp;&nbsp;
 							<a
 							href="ProjectController?action=deleteProject&projectId=<c:out value='${project.projectId}'/>"><button>Delete</button></a>
 							<a
 							href="ProjectController?action=displayProject&projectId=<c:out value='${project.projectId}'/>"><button>Assign</button></a>
 							<a
-							href="ProjectController?action=assignedProject&projectId=<c:out value='${project.projectId}'/>"><button>Unassign</button></a>
+							href="ProjectController?action=goToAssignedProject&projectId=<c:out value='${project.projectId}'/>"><button>Unassign</button></a>
 						</td>
 					</tr>
 				</c:forEach>

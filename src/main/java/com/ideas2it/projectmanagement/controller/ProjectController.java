@@ -25,12 +25,6 @@ public class ProjectController extends HttpServlet {
 	private ProjectService projectService = new ProjectServiceImpl();
 	private EmployeeService employeeService = new EmployeeServiceImpl();
 
-    /**
-     * Default constructor. 
-     */
-    public ProjectController() {
-    }
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -38,50 +32,37 @@ public class ProjectController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		switch (action) {
-		case "index":
-			index(request, response);
-			break;
-		case "projectMainPage":
-			projectMainPage(request, response);
-			break;
-		case "projectForm":
-			projectForm(request, response);
-			break;
-		case "deleteProject":
-			deleteProject(request, response);
-			break;
-		case "restore":
-			restore(request, response);
-			break;
-		case "restoreProject":
-			restoreProject(request, response);
-			break;
-		case "editProject":
-			editProject(request, response);
-			break;		
-		case "displayProject":
-			displayProject(request, response);
-			break;
-		case "assignedProject":
-			assignedProject(request, response);
-			break;
-		default:
-			break;
+		case "projectMainPage": projectMainPage(request, response);
+		                        break;
+		case "projectForm": projectForm(request, response);
+		                    break;        		
+		case "goToEditProject": goToEditProject(request, response);
+			                    break;		
+		case "displayProject": displayProject(request, response);
+	                           break;		
+		default: doGetOptions(request, response, action);
+			     break;
 		}
 	}
 	
 	/**
-	 * This is main page, redirecting to index
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param action 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	private void index(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("index.jsp").forward(request, response);	
+	protected void doGetOptions(HttpServletRequest request, 
+			HttpServletResponse response, String action) throws ServletException, IOException {
+		switch (action) {
+		case "deleteProject": deleteProject(request, response);
+			                  break;
+		case "goToRestore":	goToRestore(request, response);
+			                break;
+		case "restoreProject": restoreProject(request, response);
+		                   	   break;
+		case "goToAssignedProject":	goToAssignedProject(request, response);
+			                        break;
+		}
 	}
-
+	
 	/**
 	 * Here we redirect assigned projects values to assignedProject
 	 * @param request
@@ -89,7 +70,7 @@ public class ProjectController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void assignedProject(HttpServletRequest request,
+	private void goToAssignedProject(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int projectId = Integer.parseInt(request.getParameter("projectId"));
 		request.setAttribute("project"
@@ -109,11 +90,11 @@ public class ProjectController extends HttpServlet {
 	private void displayProject(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int projectId = Integer.parseInt(request.getParameter("projectId"));
-		List<Employee> employee = employeeService.getAllEmployee();
+		List<Employee> employees = projectService.displayEmployees();
 	    List<String> employeeProject = new ArrayList<String>();
 	    Project project = projectService.getIndividualProject(projectId);
 	    employeeProject.add(project.toString());
-	    for(Employee values : employee) {
+	    for(Employee values : employees) {
 	    	employeeProject.add(values.toString());
 	    }
         request.setAttribute("employeeProject", employeeProject);
@@ -128,7 +109,7 @@ public class ProjectController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void editProject(HttpServletRequest request,
+	private void goToEditProject(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int projectId = Integer.parseInt(request.getParameter("projectId"));
 		request.setAttribute("project", 
@@ -144,7 +125,7 @@ public class ProjectController extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void restore(HttpServletRequest request,
+	private void goToRestore(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.sendRedirect("restoreProject.jsp");		
 	}
@@ -160,7 +141,8 @@ public class ProjectController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 	    int projectId = Integer.parseInt(request.getParameter("projectId"));
 	    projectService.restoreProject(projectId);
-	    projectMainPage(request, response);
+	    request.setAttribute("message", "Successfully restored");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 
 	/**
@@ -174,7 +156,8 @@ public class ProjectController extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("projectId"));		
 	    projectService.deleteProject(id);
-	    projectMainPage(request, response);
+	    request.setAttribute("message", "Successfully deleted");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 
 	/**
@@ -210,22 +193,16 @@ public class ProjectController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
-		String action= request.getParameter("action");
+		String action = request.getParameter("action");
 		switch (action) {
-		case "insert":
-			insertProject(request, response);
-			break;
-		case "update":
-			updateProject(request, response);
-			break;
-		case "assign":
-			assign(request, response);
-			break;
-		case "unassign":
-			unassign(request, response);
-			break;
-		default:
-			break;
+		case "insert": insertProject(request, response);
+			           break;
+		case "update": updateProject(request, response);
+			           break;
+		case "assign": assign(request, response);
+			           break;
+		case "unassign": unassign(request, response);
+			             break;
 		}
 	}
 	
@@ -239,15 +216,16 @@ public class ProjectController extends HttpServlet {
 	private void unassign(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		int projectId = Integer.parseInt(request.getParameter("projectId"));
-		List<Integer> employeeId = new ArrayList<Integer>();
+		List<Integer> employeeIdList = new ArrayList<Integer>();
 		String[] values = request.getParameterValues("selected");
 		for (int index = 0; index < values.length; index++) {
-			employeeId.add(Integer.parseInt(values[index]));
+			employeeIdList.add(Integer.parseInt(values[index]));
 		}
-		List<List<Integer>> unassignProject = projectService
-				.checkIdForAssignAndUnassign(projectId, employeeId);
-        projectService.unassignEmployee(projectId, unassignProject.get(1));
-        projectMainPage(request, response);
+		List<Integer> unassignProject = projectService
+				.checkIdForAssignAndUnassign(projectId, employeeIdList, "unassign");
+        projectService.unassignEmployee(projectId, unassignProject);
+        request.setAttribute("message", "Successfully unassigned");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 		
 	}
 
@@ -261,14 +239,14 @@ public class ProjectController extends HttpServlet {
 	private void assign(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		int projectId = Integer.parseInt(request.getParameter("id"));
-		List<Integer> employeeId = new ArrayList<Integer>();
+		List<Integer> employeeIdList = new ArrayList<Integer>();
 		String[] values = request.getParameterValues("selected");
 		for (int index = 0; index < values.length; index++) {
-			employeeId.add(Integer.parseInt(values[index]));
+			employeeIdList.add(Integer.parseInt(values[index]));
 		}
-		List<List<Integer>> assignProject 
-		        = projectService.checkIdForAssignAndUnassign(projectId, employeeId);
-        projectService.assignEmployee(projectId, assignProject.get(0));
+		List<Integer> assignProject 
+		        = projectService.checkIdForAssignAndUnassign(projectId, employeeIdList, "assign");
+        projectService.assignEmployee(projectId, assignProject);
         request.setAttribute("project",
         		projectService.getIndividualProject(projectId));
         request.getRequestDispatcher("assignedProject.jsp").forward(request, response);
@@ -290,7 +268,8 @@ public class ProjectController extends HttpServlet {
 		String manager = request.getParameter("manager");
 		projectService.updateProject(projectId,
 				projectName, startDate, endDate, manager);
-		projectMainPage(request, response);
+		request.setAttribute("message", "Successfully updated");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
     }
 
 	/**
@@ -308,6 +287,7 @@ public class ProjectController extends HttpServlet {
 		String manager = request.getParameter("manager");
 		projectService.createProject(projectName,
 				startDate, endDate, manager);
-		projectMainPage(request, response);
+		request.setAttribute("message", "Successfully inserted");
+		request.getRequestDispatcher("message.jsp").forward(request, response);
 	}
 }

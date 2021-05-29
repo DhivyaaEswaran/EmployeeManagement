@@ -39,6 +39,19 @@ input[type=submit] {
 	font-size: 16px;
 	font-style: bold;
 }
+button{
+	color: black;
+	border: none;
+	padding: 5px 18px;
+	text-decoration: none;
+	display: inline-block;
+	position: fixed;
+	top: 77%;
+	left: 23%;
+	font-size: 16px;
+	font-style: bold;
+	background-color: #7DC2F0;
+}
 </style>
 </head>
 <body>
@@ -62,15 +75,17 @@ input[type=submit] {
 				value="<c:out value='${employee.salary}' />"> <br> <br>
 			<label>Date of birth: </label><br> <input type="date"
 				name="dateOfBirth" size="50" placeholder="Enter date of birth"
-				value="<c:out value='${employee.dateOfBirth}' />"> <br>
+				value="<c:out value='${employee.dateOfBirth}' />"> <br><br>
+				<label>Mobile number: </label><br> <input type="tel"
+				name="mobileNumber" size="50" placeholder="Enter mobile number"
+				value="<c:out value='${employee.mobileNumber}' />"> <br>
 			<br> <label>Email id: </label><br> <input type="email"
 				name="emailId" size="50" placeholder="Enter email id"
 				value="<c:out value='${employee.emailId}' />"> <br> <br>
-			<label>Mobile number: </label><br> <input type="tel"
-				name="mobileNumber" size="50" placeholder="Enter mobile number"
-				value="<c:out value='${employee.mobileNumber}' />"> <br>
 			<br> <input type="submit" value="SUBMIT">
 		</form>
 	</div>
+	<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
+	
 </body>
 </html>

@@ -62,7 +62,20 @@ input[type=submit]{
 	display: inline-block;
 	position: fixed;
 	top: 50%;
-	left: 43%;
+	left: 40%;
+	font-size: 16px;
+	font-style: bold;
+	background-color: #7DC2F0;
+}
+button{
+	color: black;
+	border: none;
+	padding: 5px 18px;
+	text-decoration: none;
+	display: inline-block;
+	position: fixed;
+	top: 50%;
+	left: 50%;
 	font-size: 16px;
 	font-style: bold;
 	background-color: #7DC2F0;
@@ -76,7 +89,7 @@ input[type=submit]{
 	<br>
 	<br>
 	<div class="container">
-		<form action="EmployeeController" method="get">
+		<form action="EmployeeController" method="post">
 			<table>
 				<thead>
 					<tr>
@@ -101,6 +114,8 @@ input[type=submit]{
 	<br>
 	<br>
 	<input type="submit" value="Unassign">
+	
 	</form>
+	<a href = "EmployeeController?action=employeeMainPage"><button>BACK</button></a>
 </body>
 </html>

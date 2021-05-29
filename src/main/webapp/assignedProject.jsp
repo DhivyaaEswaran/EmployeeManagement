@@ -62,10 +62,24 @@ input[type=submit]{
 	display: inline-block;
 	position: fixed;
 	top: 48%;
-	left: 44%;
+	left: 40%;
 	font-size: 16px;
 	font-style: bold;
 	background-color: #7DC2F0;
+}
+
+button {
+	background-color: #7DC2F0;
+	border: none;
+	color: black;
+	padding: 5px 18px;
+	position:fixed;
+	top:48%;
+	left:50%;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-style: bold;
 }
 </style>
 </head>
@@ -102,5 +116,6 @@ input[type=submit]{
 	<br>
 	<input type="submit" value="Unassign">
 	</form>
+	<a href=ProjectController?action=projectMainPage><button>BACK</button></a>
 </body>
 </html>

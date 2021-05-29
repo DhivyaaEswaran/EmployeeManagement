@@ -3,6 +3,7 @@ package com.ideas2it.projectmanagement.service;
 import java.sql.Date;
 import java.util.List;
 
+import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.projectmanagement.model.Project;
 
 /**
@@ -114,8 +115,8 @@ public interface ProjectService {
      *
      * @param projectId - projectId
      */
-     public List<List<Integer>> checkIdForAssignAndUnassign(int projectId,
-            List<Integer> employeeIdList);
+     public List<Integer> checkIdForAssignAndUnassign(int projectId,
+            List<Integer> employeeIdList, String values);
 
     /**
      * Here we assign employee details to project
@@ -139,4 +140,10 @@ public interface ProjectService {
      * @param id
      */
     public List<String> getAssignedEmployee(int id);
+    
+    /**
+     * 
+     * @return
+     */
+    public List<Employee> displayEmployees();
 }
