@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans">
+	<bean class ="com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl"
+	id = "employeeService">
+	<constructor-arg ref= "employeeDao"/>
+	<property ref = "projectService" name="projectService"/>
+	</bean>
+	
+	<bean class = "com.ideas2it.employeemanagement.dao.impl.EmployeeDaoImpl" 
+    id = "employeeDao"></bean>
+    
+    <bean class ="com.ideas2it.projectmanagement.service.impl.ProjectServiceImpl"
+	id = "projectService">
+	<constructor-arg ref= "projectDao"/>
+	<property ref = "employeeService" name="employeeService"/>
+	</bean>
+	
+	<bean class = "com.ideas2it.projectmanagement.dao.impl.ProjectDaoImpl" 
+    id = "projectDao"></bean>
+	</beans>

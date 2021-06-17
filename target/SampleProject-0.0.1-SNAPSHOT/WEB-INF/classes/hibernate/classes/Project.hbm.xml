@@ -1,0 +1,24 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+    <class name = "com.ideas2it.projectmanagement.model.Project" table = "project">
+      
+      <id name = "projectId" type = "int" column = "project_id">
+         <generator class = "sequence"/>
+      </id>
+ 
+      <property name = "projectName" column = "project_name" type = "string"/>
+      <property name = "startDate" column = "start_date" type = "date"/>
+      <property name = "endDate" column = "end_date" type = "date"/>
+      <property name = "manager" column = "manager" type = "string"/>
+      <property name = "isDeleted" column = "is_deleted" type = "boolean"/>
+      <bag name = "employees" table = "employee_project" lazy = "true">
+          <key column = "project_id"/>
+          <many-to-many column = "employee_id" class = "com.ideas2it.employeemanagement.model.Employee"/>
+      </bag>
+    </class>
+</hibernate-mapping>
+      
